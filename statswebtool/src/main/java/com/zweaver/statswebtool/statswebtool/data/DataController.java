@@ -9,8 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.zweaver.statswebtool.statswebtool.data.filter.FilterData;
+import com.zweaver.statswebtool.statswebtool.data.sort.SortData;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -94,4 +98,44 @@ public class DataController {
         uploadedDatasets.replaceAll(s -> s.toString().substring(s.toString().indexOf("::") + 2, s.toString().length()));
         return uploadedDatasets;
     }
+
+    /*
+    * Filter a dataset
+    */
+    @RequestMapping(value = "/filterData/{datasetName}", method = RequestMethod.POST)
+    public Data filterData(@RequestHeader("client-username") String username,
+        @PathVariable("datasetName") String datasetName,
+        @RequestBody String[][] filterConditions) {
+            // get current dataset
+            Data currentData = dataStore.get(username + "::" + datasetName);
+            FilterData fd = new FilterData();
+            fd.setColumns(currentData.getColumns());
+
+            Data filteredData = new Data();
+            filteredData.setData(fd.filter(currentData.getData(), filterConditions));
+            filteredData.setColumns(currentData.getColumns());
+
+            return filteredData;
+            
+    }
+
+    /*
+    * Sort a dataset
+    */
+    @RequestMapping(value = "/sortData/{datasetName}", method = RequestMethod.POST)
+    public Data sortData(@RequestHeader("client-username") String username,
+        @PathVariable("datasetName") String datasetName,
+        @RequestBody String[][] sortConditions) {
+            // get current dataset
+            Data currentData = dataStore.get(username + "::" + datasetName);
+            SortData sd = new SortData();
+            sd.setColumns(currentData.getColumns());
+
+            Data sortedData = new Data();
+            sortedData.setData(sd.sortData(currentData.getData(), sortConditions));
+            sortedData.setColumns(currentData.getColumns());
+
+            return sortedData;
+
+        }
 }
