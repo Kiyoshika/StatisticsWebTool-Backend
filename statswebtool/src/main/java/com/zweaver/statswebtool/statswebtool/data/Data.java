@@ -1,7 +1,8 @@
 package com.zweaver.statswebtool.statswebtool.data;
 
-import java.io.File;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class Data {
     public String[] columns;
@@ -10,18 +11,16 @@ public class Data {
     private int rowCount = 0;
     private int colCount = 0;
     
-    // naive parser, assumes it contains column names and no commas inside strings
-    public void parseCSV(String filePath) {
+    // get dimensions of data set to properly size array
+    public void getDims(BufferedReader br) {
         int currentRow = 0;
         String[] splitRow;
         
         // count rows and colunns to size array first
-        try {
-            File csvFile = new File(filePath);
-            Scanner fileReader = new Scanner(csvFile);
-            
-            while (fileReader.hasNextLine()) {
-                String currentLine = fileReader.nextLine();
+        try {           
+            String currentLine;
+            while ((currentLine = br.readLine()) != null) {
+
                 rowCount += 1;
                 if (currentRow == 0) {
                     columns = currentLine.split(",");
@@ -29,23 +28,22 @@ public class Data {
                     currentRow += 1;
                 }
             }
-            fileReader.close();
+            br.close();
+            columns = new String[colCount];
+            data = new String[rowCount-1][colCount]; //-1 for the column headers
         } catch (Exception e) {
             System.out.println("Couldn't read file!");
         }
+    }
         
-        // reset row counter for second iteration of file
-        currentRow = 0;
-        columns = new String[colCount];
-        data = new String[rowCount-1][colCount]; //-1 for the column headers
-        
-        // populate data
-        try {
-            File csvFile = new File(filePath);
-            Scanner fileReader = new Scanner(csvFile);
-            
-            while (fileReader.hasNextLine()) {
-                String currentLine = fileReader.nextLine();
+    // naive parser to populate data (uses split() method which is not a great way to parse, but good for now)
+    public void parseCSV(BufferedReader br) {
+        int currentRow = 0;
+        String[] splitRow;
+
+        try {           
+            String currentLine;
+            while ((currentLine = br.readLine()) != null) {
                 if (currentRow == 0) {
                     columns = currentLine.split(",");
                     currentRow += 1;
@@ -57,9 +55,9 @@ public class Data {
                     currentRow += 1;
                 }
             }
-            fileReader.close();
+            br.close();
         } catch (Exception e) {
-            System.out.println("Couldn't read file!");
+            System.out.println("Couldn't read file to populate data!");
         }
     }
 }
