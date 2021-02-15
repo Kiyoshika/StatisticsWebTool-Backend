@@ -60,4 +60,22 @@ public class Data {
             System.out.println("Couldn't read file to populate data!");
         }
     }
+
+    // getters
+    public String[] getColumns() {
+        return this.columns;
+    }
+
+    public String[][] getData() {
+        return this.data;
+    }
+
+    // setters
+    public void setColumns(String[] columns) {
+        this.columns = columns;
+    }
+
+    public void setData(String[][] data) {
+        this.data = data;
+    }
 }
