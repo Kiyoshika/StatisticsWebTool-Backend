@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:8080", "https://statisticswebtool.netlify.app/"})
+@CrossOrigin(origins = {"http://localhost:8080", "https://statisticswebtool.netlify.app", "https://statisticswebtool.netlify.app/"})
 public class DataController {
     // file name -- data object
     private HashMap<String, Data> dataStore = new HashMap<>();
